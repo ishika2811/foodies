@@ -1,0 +1,51 @@
+### Maven / Spring Boot ###
+target/
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### Maven Wrapper ###
+.mvn/wrapper/maven-wrapper.jar
+
+### React / Node ###
+node_modules/
+adminpanel/node_modules/
+adminpanel/build/
+adminpanel/dist/
+
+### Environment files ###
+.env
+.env.local
+
+### IntelliJ IDEA ###
+.idea/
+*.iws
+*.iml
+*.ipr
+
+### Eclipse / STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/
+
+### OS ###
+.DS_Store
+
+### Docs ###
+HELP.md
