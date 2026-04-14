@@ -119,7 +119,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <!-- Change this if your main class name is different -->
-                    <mainClass>in.bushansirgur.foodiesapi.FoodiesapiApplication</mainClass>
+                    <mainClass>in.ishikag.foodiesapi.FoodiesapiApplication</mainClass>
                     
                     <excludes>
                         <exclude>
