@@ -27,6 +27,9 @@ The project includes a **User Application**, an **Admin Panel**, and a **Backend
 - Admin food & order management
 
 ---
+## 🚀 Live Demo
+🔗 https://foodies-main.onrender.com  
+(Note: App may take 30–60 seconds to load due to free hosting)
 
 ## 📂 Project Structure
 
