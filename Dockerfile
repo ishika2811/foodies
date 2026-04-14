@@ -6,8 +6,8 @@ COPY . .
 
 RUN chmod +x mvnw
 
-RUN ./mvnw -f foodiesapi/pom.xml clean package -DskipTests
+RUN ./mvnw clean package -DskipTests -Dmaven.test.skip=true
 
 EXPOSE 8080
 
-CMD ["java", "-jar", "foodiesapi/target/*.jar"]
+CMD ["java", "-jar", "target/foodiesapi-0.0.1-SNAPSHOT.jar"]
