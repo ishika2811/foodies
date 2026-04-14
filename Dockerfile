@@ -4,7 +4,9 @@ WORKDIR /app
 
 COPY . .
 
-RUN ./mvnw clean package -DskipTests
+WORKDIR /app/foodiesapi
+
+RUN ../mvnw clean package -DskipTests
 
 EXPOSE 8080
 
