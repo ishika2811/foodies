@@ -10,10 +10,10 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.4.3</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/> 
     </parent>
 
-    <groupId>in.bushansirgur</groupId>
+    <groupId>in.ishikag</groupId>
     <artifactId>foodiesapi</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>foodiesapi</name>
@@ -114,14 +114,15 @@
     </dependencies>
 
     <build>
-        <testSourceDirectory>target/generated-test-sources/test-annotations</testSourceDirectory>
-
         <plugins>
-            <!-- Spring Boot Maven Plugin - FIXED -->
+            <!-- Spring Boot Maven Plugin - Main Class Added -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
+                    <!-- Change only if your package is different -->
+                    <mainClass>in.ishikag.foodiesapi.FoodiesapiApplication</mainClass>
+                    
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>
@@ -159,7 +160,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <jvmTarget>21</jvmTarget> <!-- Changed to 21 to match Java version -->
+                    <jvmTarget>21</jvmTarget>
                 </configuration>
             </plugin>
 
