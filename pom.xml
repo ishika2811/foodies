@@ -25,7 +25,6 @@
     </properties>
 
     <dependencies>
-        <!-- Spring Boot Starters -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-mongodb</artifactId>
@@ -43,7 +42,6 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
-        <!-- DevTools -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
@@ -99,7 +97,7 @@
             <version>${kotlin.version}</version>
         </dependency>
 
-        <!-- Test -->
+        <!-- Test Dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -120,8 +118,8 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <!-- Change only if your package is different -->
-                    <mainClass>in.ishikag.foodiesapi.FoodiesapiApplication</mainClass>
+                    <!-- Change this if your main class name is different -->
+                    <mainClass>in.bushansirgur.foodiesapi.FoodiesapiApplication</mainClass>
                     
                     <excludes>
                         <exclude>
