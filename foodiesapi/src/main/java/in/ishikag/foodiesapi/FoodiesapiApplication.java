@@ -1,4 +1,4 @@
-package in.ishikag.foodiesapi;
+package in.ishika.foodiesapi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
