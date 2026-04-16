@@ -30,7 +30,9 @@ The project includes a **User Application**, an **Admin Panel**, and a **Backend
 ## 🚀 Live Demo
 - Frontend: https://foodies-main.onrender.com
 - Backend API: https://foodies-28.onrender.com/api/foods
-🔗 https://foodies-main.onrender.com  
+
+🔗 
+https://foodies-main.onrender.com  
 (Note: App may take 30–60 seconds to load due to free hosting)
 
 ## 📂 Project Structure
