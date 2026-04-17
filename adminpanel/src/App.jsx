@@ -3,6 +3,7 @@ import { Routes,Route } from 'react-router-dom'
 import AddFood from './pages/AddFood/AddFood'
 import ListFood from './pages/ListFood/ListFood'
 import Orders from './pages/Orders/Orders'
+import Login from "./pages/Login";
 
 import Sidebar from './components/Sidebar/Sidebar'
 import Menubar from './components/Menubar/Menubar'
@@ -31,6 +32,7 @@ const App = () => {
                     <Route path="/add" element={<AddFood/>}/>
                     <Route path="/list" element={<ListFood/>}/>
                     <Route path="/orders" element={<Orders/>}/>
+                    <Route path="/login" element={<Login />} />
                     <Route path="/" element={<ListFood/>}/>
                    </Routes>
                 </div>
