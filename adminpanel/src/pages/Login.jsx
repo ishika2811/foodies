@@ -12,17 +12,30 @@ const Login = () => {
         { email, password }
       );
 
-      // 🔥 SAVE TOKEN
-      localStorage.setItem("token", response.data.token);
+      console.log("LOGIN RESPONSE:", response.data); // 🔍 DEBUG
 
-      alert("Login successful");
+      // 🔥 HANDLE ALL POSSIBLE TOKEN KEYS
+      const token =
+        response.data.token ||
+        response.data.jwt ||
+        response.data.accessToken;
 
-      // redirect (optional)
+      if (!token) {
+        alert("Token not received from backend");
+        return;
+      }
+
+      // ✅ SAVE TOKEN
+      localStorage.setItem("token", token);
+
+      alert("Login successful ✅");
+
+      // ✅ redirect to home
       window.location.href = "/";
 
     } catch (error) {
-      console.log(error);
-      alert("Login failed");
+      console.error("Login error:", error);
+      alert("Login failed ❌");
     }
   };
 
@@ -33,6 +46,7 @@ const Login = () => {
       <input
         type="email"
         placeholder="Enter Email"
+        value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
 
@@ -41,6 +55,7 @@ const Login = () => {
       <input
         type="password"
         placeholder="Enter Password"
+        value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
 
