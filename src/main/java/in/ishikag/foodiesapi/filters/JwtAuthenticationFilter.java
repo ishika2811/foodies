@@ -34,8 +34,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String path = request.getServletPath();
 
-        // 🔥 SKIP JWT for public APIs
-        if (path.startsWith("/api/foods") ||
+        // ✅ Skip only PUBLIC APIs
+        if ((path.startsWith("/api/foods") && request.getMethod().equals("GET")) ||
             path.startsWith("/api/login") ||
             path.startsWith("/api/register")) {
 
@@ -72,7 +72,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         }
 
-        // continue filter chain
         filterChain.doFilter(request, response);
     }
 }
