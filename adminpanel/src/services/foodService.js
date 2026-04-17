@@ -2,7 +2,17 @@ import axios from "axios";
 
 const API_URL = "https://foodies-28.onrender.com/api";
 
-// ✅ FETCH ALL FOODS
+// ✅ Helper → get token
+const getAuthHeader = () => {
+  const token = localStorage.getItem("token");
+  return {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  };
+};
+
+// ✅ FETCH ALL FOODS (Public)
 export const fetchFoods = async () => {
   try {
     const response = await axios.get(`${API_URL}/foods`);
@@ -13,15 +23,12 @@ export const fetchFoods = async () => {
   }
 };
 
-// ✅ ADD FOOD (🔥 FIXED WITH FORM DATA)
+// ✅ ADD FOOD (Protected)
 export const addFood = async (foodData, image) => {
   try {
     const formData = new FormData();
 
-    // IMPORTANT: backend expects "food" as JSON string
     formData.append("food", JSON.stringify(foodData));
-
-    // IMPORTANT: backend expects "file"
     formData.append("file", image);
 
     const response = await axios.post(
@@ -29,8 +36,9 @@ export const addFood = async (foodData, image) => {
       formData,
       {
         headers: {
-          "Content-Type": "multipart/form-data",
-        },
+          ...getAuthHeader().headers,
+          "Content-Type": "multipart/form-data"
+        }
       }
     );
 
@@ -42,11 +50,16 @@ export const addFood = async (foodData, image) => {
   }
 };
 
-// ✅ DELETE FOOD
+// ✅ DELETE FOOD (🔥 FIXED)
 export const deleteFood = async (id) => {
   try {
-    const response = await axios.delete(`${API_URL}/foods/${id}`);
+    const response = await axios.delete(
+      `${API_URL}/foods/${id}`,
+      getAuthHeader()   // ✅ TOKEN ADDED HERE
+    );
+
     return response.data;
+
   } catch (error) {
     console.log("Error deleting food:", error);
     throw error;
