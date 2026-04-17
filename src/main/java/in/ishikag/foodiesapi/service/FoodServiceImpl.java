@@ -1,16 +1,15 @@
 package in.ishikag.foodiesapi.service;
 
+import com.amazonaws.services.s3.AmazonS3;
 import in.ishikag.foodiesapi.entity.FoodEntity;
 import in.ishikag.foodiesapi.io.FoodRequest;
 import in.ishikag.foodiesapi.io.FoodResponse;
 import in.ishikag.foodiesapi.repository.FoodRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -21,28 +20,26 @@ public class FoodServiceImpl implements FoodService {
     @Autowired
     private FoodRepository foodRepository;
 
-    // ✅ REAL IMAGE UPLOAD (no dummy)
+    @Autowired
+    private AmazonS3 amazonS3;
+
+    @Value("${aws.bucket.name}")
+    private String bucketName;
+
+    // ✅ Upload image to AWS S3
     @Override
     public String uploadFile(MultipartFile file) {
         try {
             String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
 
-            // create uploads folder
-            Path uploadPath = Paths.get("uploads");
+            // upload file to S3
+            amazonS3.putObject(bucketName, fileName, file.getInputStream(), null);
 
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-            }
-
-            // save file
-            Path filePath = uploadPath.resolve(fileName);
-            Files.copy(file.getInputStream(), filePath);
-
-            // 👉 IMPORTANT: Render URL
-            return "https://foodies-28.onrender.com/uploads/" + fileName;
+            // return public URL
+            return amazonS3.getUrl(bucketName, fileName).toString();
 
         } catch (Exception e) {
-            throw new RuntimeException("File upload failed", e);
+            throw new RuntimeException("S3 upload failed", e);
         }
     }
 
@@ -51,7 +48,7 @@ public class FoodServiceImpl implements FoodService {
 
         FoodEntity newFoodEntity = convertToEntity(request);
 
-        // ✅ upload real image
+        // upload image to S3
         String imageUrl = uploadFile(file);
         newFoodEntity.setImageUrl(imageUrl);
 
@@ -78,10 +75,13 @@ public class FoodServiceImpl implements FoodService {
     }
 
     @Override
-    public boolean deleteFile(String filename) {
+    public boolean deleteFile(String fileName) {
         try {
-            Path filePath = Paths.get("uploads").resolve(filename);
-            return Files.deleteIfExists(filePath);
+            if (amazonS3.doesObjectExist(bucketName, fileName)) {
+                amazonS3.deleteObject(bucketName, fileName);
+                return true;
+            }
+            return false;
         } catch (Exception e) {
             return false;
         }
@@ -91,10 +91,12 @@ public class FoodServiceImpl implements FoodService {
     public void deleteFood(String id) {
         FoodResponse response = readFood(id);
 
-        // delete image file
+        // delete image from S3
         if (response.getImageUrl() != null) {
-            String filename = response.getImageUrl().substring(response.getImageUrl().lastIndexOf("/") + 1);
-            deleteFile(filename);
+            String fileName = response.getImageUrl()
+                    .substring(response.getImageUrl().lastIndexOf("/") + 1);
+
+            deleteFile(fileName);
         }
 
         // delete from DB
