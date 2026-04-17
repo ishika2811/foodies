@@ -3,7 +3,7 @@ import { Routes,Route } from 'react-router-dom'
 import AddFood from './pages/AddFood/AddFood'
 import ListFood from './pages/ListFood/ListFood'
 import Orders from './pages/Orders/Orders'
-import Login from "./pages/Login";
+import Login from "./pages/Login.jsx"
 
 import Sidebar from './components/Sidebar/Sidebar'
 import Menubar from './components/Menubar/Menubar'
