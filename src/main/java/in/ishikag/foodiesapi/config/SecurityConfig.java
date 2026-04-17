@@ -5,6 +5,7 @@ import in.ishikag.foodiesapi.service.AppUserDetailsService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -37,13 +38,17 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/api/register",
-                                "/api/login",
-                                "/api/foods/**",
-                                "/api/orders/all",
-                                "/api/orders/status/**"
-                        ).permitAll()
+                        // ✅ Public APIs
+                        .requestMatchers("/api/register", "/api/login").permitAll()
+
+                        // ✅ Public GET (foods visible to all)
+                        .requestMatchers(HttpMethod.GET, "/api/foods/**").permitAll()
+
+                        // 🔒 Admin only (optional but recommended)
+                        .requestMatchers(HttpMethod.DELETE, "/api/foods/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/foods/**").hasRole("ADMIN")
+
+                        // 🔒 Everything else needs login
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session ->
@@ -59,7 +64,7 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // 🔥 FIXED CORS CONFIG
+    // ✅ CORS
     @Bean
     public CorsFilter corsFilter() {
         return new CorsFilter(corsConfigurationSource());
@@ -68,18 +73,9 @@ public class SecurityConfig {
     private UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        // ✅ Allow all origins (fix for Render deployment)
         config.setAllowedOriginPatterns(List.of("*"));
-
-        // ✅ Allow all methods
-        config.setAllowedMethods(List.of(
-                "GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"
-        ));
-
-        // ✅ Allow all headers
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         config.setAllowedHeaders(List.of("*"));
-
-        // ⚠️ Important for JWT
         config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
