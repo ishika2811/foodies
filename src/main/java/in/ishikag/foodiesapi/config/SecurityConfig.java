@@ -19,8 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 
 import java.util.List;
 
@@ -32,23 +32,24 @@ public class SecurityConfig {
     private final AppUserDetailsService userDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    // ✅ SECURITY CONFIG
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(Customizer.withDefaults())
+                .cors(Customizer.withDefaults())   // ✅ IMPORTANT
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        // ✅ Public APIs
+                        // Public APIs
                         .requestMatchers("/api/register", "/api/login").permitAll()
 
-                        // ✅ Public GET (foods visible to all)
+                        // Public GET
                         .requestMatchers(HttpMethod.GET, "/api/foods/**").permitAll()
 
-                        // 🔒 Admin only (optional but recommended)
-                        .requestMatchers(HttpMethod.DELETE, "/api/foods/**").hasRole("ADMIN")
+                        // Admin only
                         .requestMatchers(HttpMethod.POST, "/api/foods/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/foods/**").hasRole("ADMIN")
 
-                        // 🔒 Everything else needs login
+                        // Everything else secured
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session ->
@@ -59,32 +60,33 @@ public class SecurityConfig {
         return http.build();
     }
 
+    // ✅ CORS FIX (MAIN PART)
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    // ✅ CORS
-    @Bean
-    public CorsFilter corsFilter() {
-        return new CorsFilter(corsConfigurationSource());
-    }
-
-    private UrlBasedCorsConfigurationSource corsConfigurationSource() {
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-       config.setAllowedOrigins(List.of(
-    "https://foodiesadminpanel-28.onrender.com"
-));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+        config.setAllowedOrigins(List.of(
+                "https://foodiesadminpanel-28.onrender.com"
+        ));
+        config.setAllowedMethods(List.of(
+                "GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"
+        ));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
+
         return source;
     }
 
+    // ✅ PASSWORD ENCODER
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    // ✅ AUTH MANAGER
     @Bean
     public AuthenticationManager authenticationManager() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
