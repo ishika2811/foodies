@@ -1,44 +1,40 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { fetchFoods, deleteFood } from "../../services/foodService";
+import "./ListFood.css";
+import { deleteFood, getFoodList } from "../../services/foodService";
 
 const ListFood = () => {
   const [list, setList] = useState([]);
-
-  // ✅ FETCH FOOD LIST
   const fetchList = async () => {
     try {
-      const data = await fetchFoods(); // get data from service
-      setList(data);                   // update state
+      const data = await getFoodList();
+      setList(data);
     } catch (error) {
-      console.error(error);
-      toast.error("Error while reading food list");
+      toast.error("Error while reading the foods.");
     }
   };
 
-  // ✅ DELETE FOOD
   const removeFood = async (foodId) => {
     try {
       const success = await deleteFood(foodId);
       if (success) {
-        toast.success("Food item removed successfully");
-        fetchList(); // refresh list
+        toast.success("Food removed.");
+        await fetchList();
       } else {
-        toast.error("Error removing food item");
+        toast.error("Error occred while removing the food.");
       }
     } catch (error) {
-      console.error(error);
-      toast.error("Error removing food item");
+      toast.error("Error occred while removing the food.");
     }
   };
 
   useEffect(() => {
     fetchList();
   }, []);
-
   return (
     <div className="py-5 row justify-content-center">
-      <div className="col-11-card">
+      <div className="col-11 card">
         <table className="table">
           <thead>
             <tr>
@@ -49,32 +45,26 @@ const ListFood = () => {
               <th>Action</th>
             </tr>
           </thead>
-
           <tbody>
-            {list.map((item) => (
-              <tr key={item.id}>
-                <td>
-                  <img
-                    src={item.imageUrl}
-                    alt={item.name}
-                    width="48"
-                    height="48"
-                  />
-                </td>
-                <td>{item.name}</td>
-                <td>{item.category}</td>
-                <td>&#8377;{item.price}</td>
-                <td
-                  className="text-danger"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => removeFood(item.id)}
-                >
-                  <i className="bi bi-x-circle-fill"></i>
-                </td>
-              </tr>
-            ))}
+            {list.map((item, index) => {
+              return (
+                <tr key={index}>
+                  <td>
+                    <img src={item.imageUrl} alt="" height={48} width={48} />
+                  </td>
+                  <td>{item.name}</td>
+                  <td>{item.category}</td>
+                  <td>&#8377;{item.price}.00</td>
+                  <td className="text-danger">
+                    <i
+                      class="bi bi-trash-fill fs-4"
+                      onClick={() => removeFood(item.id)}
+                    ></i>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
-
         </table>
       </div>
     </div>

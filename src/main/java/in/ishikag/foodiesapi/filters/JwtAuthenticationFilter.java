@@ -27,6 +27,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private UserDetailsService userDetailsService;
 
     @Override
+<<<<<<< HEAD
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain)
@@ -43,6 +44,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
+=======
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        String path = request.getServletPath();
+
+        if (path.equals("/api/login") || path.equals("/api/register")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+>>>>>>> 7949972 (removed submodule and updated files)
         final String authHeader = request.getHeader("Authorization");
 
         if (StringUtils.hasText(authHeader) && authHeader.startsWith("Bearer ")) {

@@ -30,7 +30,17 @@ public class FoodServiceImpl implements FoodService {
     @Override
     public String uploadFile(MultipartFile file) {
         try {
+<<<<<<< HEAD
             String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+=======
+            PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(key)
+
+                    .contentType("image/png")
+                    .build();
+            PutObjectResponse response = s3Client.putObject(putObjectRequest, RequestBody.fromBytes(file.getBytes()));
+>>>>>>> 7949972 (removed submodule and updated files)
 
             // upload file to S3
             amazonS3.putObject(bucketName, fileName, file.getInputStream(), null);
